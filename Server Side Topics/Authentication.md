@@ -63,33 +63,33 @@ While attempting brute-force attacks on a login page, pay attention to any diffe
    - Submit an invalid username and password.
    - Highlight the username parameter in the `POST /login` request and send it to the Intruder.
 
-   ![Invalid Credentials](image-11.png)
+   ![Invalid Credentials](../images/image-11.png)
 
 2. **Configure Grep-Extract**
    - Go to settings and under Grep-Extract, add the following:
 
-     ![Grep-Extract Settings](image-12.png)
+     ![Grep-Extract Settings](../images/image-12.png)
 
    - Highlight the part "Invalid username or Password" and press OK. Everything else is handled automatically.
 
-     ![Highlight Error Message](image-13.png)
+     ![Highlight Error Message](../images/image-13.png)
 
 3. **Start the Attack**
    - Start the attack. After getting the results, observe the new column named `-warning>`.
 
-     ![Attack Results](image-14.png)
+     ![Attack Results](../images/image-14.png)
 
 4. **Analyze Results**
    - Notice that all error messages are the same except one, which is different (e.g., missing a full stop).
    - Use this to identify the valid username.
 
-     ![Analyze Results](image-16.png)
+     ![Analyze Results](../images/image-16.png)
 
 5. **Brute-Force Passwords**
    - After identifying the username, repeat the process for the password.
    - Observe the different status code (e.g., `302`) for a payload named "amanda".
 
-     ![Password Brute-Force](image-17.png)
+     ![Password Brute-Force](../images/image-17.png)
 
 6. **Login and Solve the Lab**
    - Use the identified username and password to log in.
@@ -97,11 +97,11 @@ While attempting brute-force attacks on a login page, pay attention to any diffe
      - Username: `asdl`
      - Password: `amanda`
 
-     ![Login Success](image-18.png)
+     ![Login Success](../images/image-18.png)
 
    - After logging in, the lab is solved!
 
-     ![Lab Solved](image-19.png)
+     ![Lab Solved](../images/image-19.png)
 
 ---
 
@@ -117,22 +117,22 @@ While attempting brute-force attacks on a login page, pay attention to any diffe
    - To bypass IP-based brute-force protection, add the `X-Forwarded-For` header.
    - Change the code from `500` to a different number (e.g., `501`, `502`) for each request.
 
-     ![Spoof IP Address](image-20.png)
+     ![Spoof IP Address](../images/image-20.png)
 
 3. **Analyze Response Times**
    - Observe the response times:
      - Shorter response time: Correct username and password.
      - Slightly longer response time: Valid username but incorrect password.
 
-     ![Response Time Analysis](image-21.png)
-     ![Response Time Comparison](image-22.png)
+     ![Response Time Analysis](../images/image-21.png)
+     ![Response Time Comparison](../images/image-22.png)
 
 4. **Configure Burp Intruder**
    - Send the request to Burp Intruder.
    - Select the Pitchfork attack type and add the `X-Forwarded-For` header.
    - Add payload positions for both `X-Forwarded-For` and the username.
 
-     ![Burp Intruder Setup](image-23.png)
+     ![Burp Intruder Setup](../images/image-23.png)
 
 5. **Set Payloads**
    - Set the password payload to a long string (e.g., 100 characters).
@@ -142,33 +142,33 @@ While attempting brute-force attacks on a login page, pay attention to any diffe
      - Step: `1`
      - Max fraction digits: `0`
 
-     ![Payload Configuration](image-24.png)
-     ![Payload Range](image-25.png)
+     ![Payload Configuration](../images/image-24.png)
+     ![Payload Range](../images/image-25.png)
 
 6. **Start the Attack**
    - Start the attack and tick the checkbox for "Response Completed" in the results.
 
-     ![Start Attack](image-26.png)
-     ![Response Completed](image-27.png)
+     ![Start Attack](../images/image-26.png)
+     ![Response Completed](../images/image-27.png)
 
 7. **Identify Valid Username**
    - Analyze the results to find significant differences in response times.
    - Confirm the valid username by repeating the request multiple times.
 
-     ![Identify Username](image-28.png)
-     ![Confirm Username](image-29.png)
+     ![Identify Username](../images/image-28.png)
+     ![Confirm Username](../images/image-29.png)
 
 8. **Brute-Force Passwords**
    - Create a new Burp Intruder attack.
    - Add the `X-Forwarded-For` header and set the payload position to the password parameter.
    - Use the identified username (e.g., `adm`) and paste the provided password list.
 
-     ![Brute-Force Passwords](image-31.png)
+     ![Brute-Force Passwords](../images/image-31.png)
 
 9. **Login and Solve the Lab**
    - After identifying the correct password (e.g., `killer`), log in using:
      - Username: `adm`
      - Password: `killer`
 
-     ![Login Success](image-32.png)
-     ![Lab Solved](image-33.png)
+     ![Login Success](../images/image-32.png)
+     ![Lab Solved](../images/image-33.png)
