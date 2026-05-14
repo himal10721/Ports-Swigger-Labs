@@ -1,2 +1,2 @@
-# Ignore images folder
-/images/
+# Ignore other files but include images
+# !/images/
