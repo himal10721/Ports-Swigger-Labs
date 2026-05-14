@@ -2,6 +2,8 @@
 
 Authentication vulnerabilities allow attackers to gain access to sensitive data and functionality. For this reason, it is important to learn how to identify and exploit authentication vulnerabilities and understand how to bypass them.
 
+---
+
 ## What is Authentication?
 
 Authentication is the process of verifying the identity of a user or client. The three main types of authentication are as follows:
@@ -10,10 +12,14 @@ Authentication is the process of verifying the identity of a user or client. The
 2. **Something you have**: A physical card or a token.
 3. **Something you are**: Biometrics or patterns of behavior.
 
+---
+
 ## Difference Between Authentication and Authorization
 
 - **Authentication**: Determines whether a user is who they claim to be.
 - **Authorization**: Ensures that the user, once verified, is allowed to perform specific activities.
+
+---
 
 ## Vulnerabilities in Password-Based Login
 
@@ -33,6 +39,8 @@ Passwords can be brute-forced, with the difficulty varying based on the strength
   - `Mypassword!`
   - `mypas$$word`
 
+---
+
 ### Username Enumeration
 
 When an attacker observes changes in a website's behavior to identify whether a given username is valid, it is called username enumeration. This reduces the time and effort required to brute-force a login because the attacker can quickly generate a shortlist of valid usernames.
@@ -45,42 +53,122 @@ While attempting brute-force attacks on a login page, pay attention to any diffe
 2. **Error messages**
 3. **Response times**
 
+---
+
 ## Lab: Username Enumeration via Different Responses
 
 ### Steps:
 
-1. **Capture the Login Request**
-   - Go to Burp Suite and look for the login request.
-   - Right-click and send it to Intruder.
+1. **Submit Invalid Credentials**
+   - Submit an invalid username and password.
+   - Highlight the username parameter in the `POST /login` request and send it to the Intruder.
 
-   ![Login Request](image.png)
+   ![Invalid Credentials](image-11.png)
 
-2. **Load the Username List**
-   - Use the list of usernames provided by Burp Suite.
-   - Paste the list into the payloads section of Intruder.
+2. **Configure Grep-Extract**
+   - Go to settings and under Grep-Extract, add the following:
 
-   ![Payloads](image-2.png)
+     ![Grep-Extract Settings](image-12.png)
 
-3. **Analyze the Responses**
-   - Sort the responses by length.
-   - Check the response messages. For example:
-     - "Incorrect password" indicates a valid username.
-     - "Incorrect username" indicates an invalid username.
+   - Highlight the part "Invalid username or Password" and press OK. Everything else is handled automatically.
 
-   ![Response Analysis](image-5.png)
+     ![Highlight Error Message](image-13.png)
 
-4. **Identify the Correct Username**
-   - Copy the correct username and use it for further testing.
+3. **Start the Attack**
+   - Start the attack. After getting the results, observe the new column named `-warning>`.
 
-   ![Correct Username](image-7.png)
+     ![Attack Results](image-14.png)
+
+4. **Analyze Results**
+   - Notice that all error messages are the same except one, which is different (e.g., missing a full stop).
+   - Use this to identify the valid username.
+
+     ![Analyze Results](image-16.png)
 
 5. **Brute-Force Passwords**
-   - Sort responses by status codes (e.g., `302` for successful login).
-   - Send the response to the browser to verify.
+   - After identifying the username, repeat the process for the password.
+   - Observe the different status code (e.g., `302`) for a payload named "amanda".
 
-   ![Password Brute-Force](image-9.png)
+     ![Password Brute-Force](image-17.png)
 
-   ![Browser Verification](image-10.png)
+6. **Login and Solve the Lab**
+   - Use the identified username and password to log in.
 
+     - Username: `asdl`
+     - Password: `amanda`
 
+     ![Login Success](image-18.png)
 
+   - After logging in, the lab is solved!
+
+     ![Lab Solved](image-19.png)
+
+---
+
+## Lab: Username Enumeration via Response Timing
+
+### Steps:
+
+1. **Capture the Login Request**
+   - With Burp Suite running, enter an invalid username and password.
+   - Send the `POST /login` request to Burp Repeater.
+
+2. **Spoof IP Address**
+   - To bypass IP-based brute-force protection, add the `X-Forwarded-For` header.
+   - Change the code from `500` to a different number (e.g., `501`, `502`) for each request.
+
+     ![Spoof IP Address](image-20.png)
+
+3. **Analyze Response Times**
+   - Observe the response times:
+     - Shorter response time: Correct username and password.
+     - Slightly longer response time: Valid username but incorrect password.
+
+     ![Response Time Analysis](image-21.png)
+     ![Response Time Comparison](image-22.png)
+
+4. **Configure Burp Intruder**
+   - Send the request to Burp Intruder.
+   - Select the Pitchfork attack type and add the `X-Forwarded-For` header.
+   - Add payload positions for both `X-Forwarded-For` and the username.
+
+     ![Burp Intruder Setup](image-23.png)
+
+5. **Set Payloads**
+   - Set the password payload to a long string (e.g., 100 characters).
+   - In the payloads panel, configure:
+     - Payload position: `1`
+     - Range: `1-100`
+     - Step: `1`
+     - Max fraction digits: `0`
+
+     ![Payload Configuration](image-24.png)
+     ![Payload Range](image-25.png)
+
+6. **Start the Attack**
+   - Start the attack and tick the checkbox for "Response Completed" in the results.
+
+     ![Start Attack](image-26.png)
+     ![Response Completed](image-27.png)
+
+7. **Identify Valid Username**
+   - Analyze the results to find significant differences in response times.
+   - Confirm the valid username by repeating the request multiple times.
+
+     ![Identify Username](image-28.png)
+     ![Confirm Username](image-29.png)
+
+8. **Brute-Force Passwords**
+   - Create a new Burp Intruder attack.
+   - Add the `X-Forwarded-For` header and set the payload position to the password parameter.
+   - Use the identified username (e.g., `adm`) and paste the provided password list.
+
+     ![Brute-Force Passwords](image-31.png)
+
+9. **Login and Solve the Lab**
+   - After identifying the correct password (e.g., `killer`), log in using:
+     - Username: `adm`
+     - Password: `killer`
+
+     ![Login Success](image-32.png)
+     ![Lab Solved](image-33.png)
