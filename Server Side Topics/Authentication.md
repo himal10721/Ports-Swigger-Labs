@@ -172,3 +172,194 @@ While attempting brute-force attacks on a login page, pay attention to any diffe
 
      ![Login Success](../images/image-32.png)
      ![Lab Solved](../images/image-33.png)
+
+
+## Lab: Broken Brute-Force Protection, IP Block
+
+### Steps:
+
+1. **Investigate the Login Page**
+   - We first investigate the login page and observe that the IP is temporarily blocked if we submit 3 incorrect logins in a row.
+   - However, we can reset the counter by logging in to our own account before this limit is reached.
+   
+     ![alt text](../images/image.png)
+
+2. **Configure Burp Intruder**
+   - We need to enter an invalid username and password and then send the `POST /login` request to the Burp Intruder.
+   - We then create a Pitchfork attack with a payload position on both the username and password parameters.
+   
+     ![alt text](../images/image-101.png)
+
+3. **Set Up Resource Pool**
+   - We click on the resource pool to open the Resource pool side panel, then add the attack to a resource pool with maximum concurrent requests set to `1`.
+   - By only sending one request at a time, we can ensure that our login attempts are sent to the server in a correct order.
+   
+     ![alt text](../images/image-102.png)
+
+4. **Configure Payloads (Position 1)**
+   - After this, we click on payloads to open the Payloads side panel and select position `1` from the payload position drop-down list.
+   - We add a list of payloads that alternates between our username and `carlos`.
+   - Also need to make sure that our username is first and `carlos` is repeated at least 100 times. For this, we run a script from GitHub by rkhal101.
+   
+     ![alt text](../images/image-103.png)
+     ![alt text](../images/image-104.png)
+
+5. **Configure Payloads (Position 2)**
+   - Editing the list of candidate passwords is what we do now.
+   - We need to add our own password before each one and need to make sure that the password is aligned with the username in the other list.
+   
+     ![alt text](../images/image-105.png)
+     
+   - We select position `2` from the Payload position drop-down list and add the password list. After that we start the attack.
+
+6. **Analyze Results**
+   - When the attack finishes, we filter the results to hide the responses with a `200` status code and sort out the remaining results by username.
+   - There should only be a single `302` response for requests with the username `carlos`. Also need to make a note of the password from the Payload 2 column.
+   
+     ![alt text](../images/image-106.png)
+     
+   - *In the above screenshot, we can see that the username `carlos` matches with password `131313`.*
+
+7. **Login and Solve the Lab**
+   - At last, we login into Carlos's account using the password we identified and access his account page.
+   
+     ![alt text](../images/image-107.png)
+
+---
+
+## Account Locking
+
+One way in which websites try to prevent brute-forcing is when certain criteria are met, usually a set number of failed login attempts. Just as with normal login errors, responses from the server indicating that an account is locked can also help us enumerate usernames.
+
+---
+
+## Lab: Username Enumeration via Account Lock
+
+### Steps:
+
+1. **Configure Cluster Bomb Attack**
+   - We investigate the login page in Burp by sending the `POST /login` request to Burp Intruder.
+   - We then select a **Cluster bomb** attack from the attack type drop-down menu and add the `username` parameter to the payload position and also add a blank payload position to the end of the request body.
+   
+     ![alt text](../images/image-108.png)
+
+2. **Set Payloads**
+   - In the payloads panel, we add the list of usernames for the first payload position from PortSwigger.
+   - In the second payload position which is empty, we select the **Null payloads** type and choose the option to generate `5` payloads which will cause each username to be repeated 5 times, and start the attack.
+   
+     ![alt text](../images/image-109.png)
+
+3. **Analyze Results**
+   - In the results, we can notice that the responses for one of the usernames are longer than the responses when using other usernames.
+   - One username has a different error message, we make a note of this username.
+   
+     ![alt text](../images/image-110.png)
+
+4. **Brute-Force Passwords**
+   - We now create a new Burp Intruder attack on the `POST /login` request but select **Sniper** attack this time.
+   - We set the `username` parameter to the username that we identified and add a payload position to the `password` parameter and paste the list of password parameters.
+   - Once this is done, we simply start the attack.
+   
+     ![alt text](../images/image-111.png)
+
+5. **Login and Solve the Lab**
+   - We look for the one that did not have any error messages. In our case, it's "cheese".
+   - We make a note of this and go to the login page.
+   
+     ![alt text](../images/image-112.png)
+     
+   - We successfully login and solve the lab.## Lab: Broken Brute-Force Protection, IP Block
+
+### Steps:
+
+1. **Investigate the Login Page**
+   - We first investigate the login page and observe that the IP is temporarily blocked if we submit 3 incorrect logins in a row.
+   - However, we can reset the counter by logging in to our own account before this limit is reached.
+   
+     ![alt text](../images/image.png)
+
+2. **Configure Burp Intruder**
+   - We need to enter an invalid username and password and then send the `POST /login` request to the Burp Intruder.
+   - We then create a Pitchfork attack with a payload position on both the username and password parameters.
+   
+     ![alt text](../images/image-101.png)
+
+3. **Set Up Resource Pool**
+   - We click on the resource pool to open the Resource pool side panel, then add the attack to a resource pool with maximum concurrent requests set to `1`.
+   - By only sending one request at a time, we can ensure that our login attempts are sent to the server in a correct order.
+   
+     ![alt text](../images/image-102.png)
+
+4. **Configure Payloads (Position 1)**
+   - After this, we click on payloads to open the Payloads side panel and select position `1` from the payload position drop-down list.
+   - We add a list of payloads that alternates between our username and `carlos`.
+   - Also need to make sure that our username is first and `carlos` is repeated at least 100 times. For this, we run a script from GitHub by rkhal101.
+   
+     ![alt text](../images/image-103.png)
+     ![alt text](../images/image-104.png)
+
+5. **Configure Payloads (Position 2)**
+   - Editing the list of candidate passwords is what we do now.
+   - We need to add our own password before each one and need to make sure that the password is aligned with the username in the other list.
+   
+     ![alt text](../images/image-105.png)
+     
+   - We select position `2` from the Payload position drop-down list and add the password list. After that we start the attack.
+
+6. **Analyze Results**
+   - When the attack finishes, we filter the results to hide the responses with a `200` status code and sort out the remaining results by username.
+   - There should only be a single `302` response for requests with the username `carlos`. Also need to make a note of the password from the Payload 2 column.
+   
+     ![alt text](../images/image-106.png)
+     
+   - *In the above screenshot, we can see that the username `carlos` matches with password `131313`.*
+
+7. **Login and Solve the Lab**
+   - At last, we login into Carlos's account using the password we identified and access his account page.
+   
+     ![alt text](../images/image-107.png)
+
+---
+
+## Account Locking
+
+One way in which websites try to prevent brute-forcing is when certain criteria are met, usually a set number of failed login attempts. Just as with normal login errors, responses from the server indicating that an account is locked can also help us enumerate usernames.
+
+---
+
+## Lab: Username Enumeration via Account Lock
+
+### Steps:
+
+1. **Configure Cluster Bomb Attack**
+   - We investigate the login page in Burp by sending the `POST /login` request to Burp Intruder.
+   - We then select a **Cluster bomb** attack from the attack type drop-down menu and add the `username` parameter to the payload position and also add a blank payload position to the end of the request body.
+   
+     ![alt text](../images/image-108.png)
+
+2. **Set Payloads**
+   - In the payloads panel, we add the list of usernames for the first payload position from PortSwigger.
+   - In the second payload position which is empty, we select the **Null payloads** type and choose the option to generate `5` payloads which will cause each username to be repeated 5 times, and start the attack.
+   
+     ![alt text](../images/image-109.png)
+
+3. **Analyze Results**
+   - In the results, we can notice that the responses for one of the usernames are longer than the responses when using other usernames.
+   - One username has a different error message, we make a note of this username.
+   
+     ![alt text](../images/image-110.png)
+
+4. **Brute-Force Passwords**
+   - We now create a new Burp Intruder attack on the `POST /login` request but select **Sniper** attack this time.
+   - We set the `username` parameter to the username that we identified and add a payload position to the `password` parameter and paste the list of password parameters.
+   - Once this is done, we simply start the attack.
+   
+     ![alt text](../images/image-111.png)
+
+5. **Login and Solve the Lab**
+   - We look for the one that did not have any error messages. In our case, it's "cheese".
+   - We make a note of this and go to the login page.
+   
+     ![alt text](../images/image-112.png)
+     
+   - We successfully login and solve the lab.
