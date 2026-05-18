@@ -280,18 +280,69 @@ User rate limiting can prevent brute-force attacks. Making too many requests wit
 
 1. **Investigate the Login Page**
    - The `POST /login` request submits the login credentials in JSON format. Send this request to the repeater.
-     ![Login Request](image.png)
+     ![alt text](../images/image-38.png)
 
 2. **Modify the Password Field**
    - Replace the single string value of the password with an array of strings containing all the candidate passwords.
-     ![Modified Password Field](image-1.png)
+     ![alt text](../images/image-34.png)
 
 3. **Send the Request**
    - Send the modified request. This returns a `302` response.
-     ![302 Response](image-2.png)
+     ![alt text](../images/image-35.png)
 
 4. **Show Response in Browser**
    - Right-click on the request and select "Show response in browser."
    - Copy the URL and load it in the browser. The page loads, and you are logged in as `carlos`.
-     ![Logged in as Carlos](image-3.png)
-     ![Carlos Account Page](image-4.png)
+     ![alt text](../images/image-37.png)
+     ![alt text](../images/image-36.png)
+     
+# Vulnerabilities in Multi-Factor Authentication
+
+## Lab: 2FA Simple Bypass
+
+1. **Log In to Own Account**
+   We log into our own account. The 2FA will be sent by email.
+
+2. **Note the Account URL**
+   We go to our accounts page and make a note of the URL.
+   ![alt text](../images/image-45.png)
+
+3. **Log Out**
+   We log out of our account.
+
+4. **Log In with Victim's Credentials**
+   We log in using the victims credentials.
+
+5. **Bypass Verification**
+   When prompted for the verification code, we change the URL to navigate to `/my-account`.
+   ![alt text](../images/image-39.png)
+
+---
+
+## Lab: Flawed Two-Factor Verification Logic
+
+1. **Investigate the Verification Process**
+   We log in to our own account and investigate the 2FA verification process. We use `POST /login2` request and verify the parameter that is being used to determine which user's account is being accessed.
+   ![alt text](../images/image-40.png)
+
+2. **Log Out**
+   We log out of our account.
+
+3. **Generate Temporary 2FA Code**
+   We send the `GET /login2` request to burp repeater and change the value of the `verify` parameter to `carlos` and send the request to ensure a temporary 2FA code for carlos.
+   ![alt text](../images/image-41.png)
+
+4. **Submit Invalid Code**
+   We go to the login page and enter the username and password and submit an invalid 2FA code.
+   ![alt text](../images/image-42.png)
+
+5. **Send Request to Intruder**
+   We then send the `POST /login2` request to Burp intruder.
+   ![alt text](../images/image-43.png)
+
+6. **Brute-Force the Code**
+   In burp intruder, we set the `verify` parameter to `carlos` and add the payload position to the `mfa-code` parameter and brute-force the code.
+   ![alt text](../images/image-44.png)
+
+7. **Solve the Lab**
+   We then load the `302` response in the browser and click my account to solve the lab.
