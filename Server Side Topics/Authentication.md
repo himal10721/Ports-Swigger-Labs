@@ -549,3 +549,56 @@ We successfully go to the reset page.
 ![alt text](../images/image-82.png)
 We sucessfully solve the lab!
    
+# Changing users passwords:
+Typically, changing user password invloves entering current password and then the new password twice. These pages fundamentally rely on the same process for checking that usernames and current passwords match as a normal login page does. Therefore, these pages can be vulnerable to the same technique.
+
+Password change functionality can be particularly dangerous if it allows an attacker to access it directly without being logged in as the victim user.
+
+
+## LAB: Password brute-force via password change
+
+1. We will log in with the creds that we are already provided.
+
+2. After logging in, we are redirected to the password change page which allows us to change our password.
+![alt text](../images/image-83.png)
+
+3. Now, we need to investigate the behavior of the password change functionality. For that, we simply put in the current password and the new password twice. 
+![alt text](../images/image-84.png)
+
+We are simply redirected to sucess page.
+![alt text](../images/image-85.png)
+
+4. Our next step is to put in the incorrect password and see what happens when trying to change the password.
+
+When we put in the wrong password in the current password field, we get sent to the login page.
+![alt text](../images/image-86.png)
+
+5. Here, we try to put in the wrong password in purpose to see what would happen if we put incorrect password after being logged out.
+![alt text](../images/image-87.png)
+
+6. Now we need to log in again and put the current password. We put in separate passwords in both the fields and see how it behaves.
+![alt text](../images/image-88.png)
+
+We can see that when there's a wrong password, in all the fields, we get redirected to the same page.
+
+7. Now, we send it to the repeater.
+![alt text](../images/image-89.png)
+
+8. Now, we try to send the request again by putting in the correct current password this time. But leave the pass1 and pass2 as it is. 
+![alt text](../images/image-90.png)
+
+We can see that the new passwords donot match.
+
+![alt text](../images/image-91.png)
+
+9. We now go to intruder and try to brute force the current password. If there's a match in current password then, we will know since the system will return new passwords donot match!
+![alt text](../images/image-92.png)
+
+10. We're looking for a different response, so we sort the list of passwords by length and see if there's any message saying new passwords donot match.
+![alt text](../images/image-93.png)
+
+Here, it can be seen that there is a message saying that the new passwords do not match.
+
+11. To solve the lab, we simply put in the password that we just found. 
+
+![alt text](../images/image-94.png)
