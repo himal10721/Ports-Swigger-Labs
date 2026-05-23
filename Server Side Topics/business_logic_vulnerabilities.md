@@ -131,5 +131,61 @@ My version of burp suite is community so It will take me alot of time to complet
 
 6. Now we can see that we get HTTP 200 response, so everything is good to go.
 
+
+
+## Trusted users wont always remain trustworthy
+
+Applications may appear to be secure because they implement seemingly robust measures to enforce the business rules. Unfortunately, some applications make the mistake of assuming that, having passed these strict controls initially, the user and their data can be trusted indefinitely.
+If business rules and security measures are not applied consistently throughout the application, this can potentially lead to dangerous loopholes that may be exploited by an attacker.
+
+This lab's flawed logic allows arbitrary users to access administrative functionality that should only be available to company employees. To solve the lab, access the admin panel and delete the user carlos.
+
+1. First lets look at the /admin path and see if we're allowed
+![alt text](../images/image-150.png)
+
+It will only allows us if we are logged in as DontWannaCry user.
+
+So let's go ahead and create an account
+
+2. Lets login and try to change the email address to @dontwannacry
+![alt text](../images/image-151.png)
+
+
+3. Surprisingly, our email has been changed and we can now access the Admin Panel
+![alt text](../images/image-152.png)
+
+4. We delete the user "carlos" and solve the lab!
+![alt text](../images/image-153.png)
+
+![alt text](../images/image-154.png)
+
+## Users always wont follow the intended sequence
+
+### Lab: Insufficient workflow validation
+
+This lab makes flawed assumptions about the sequence of events in the purchasing workflow. To solve the lab, exploit this flaw to buy a "Lightweight l33t leather jacket".
+
+1. Lets log in to our account using peter and wiener.
+
+2. Lets observe the purchase workflow. 
+![alt text](image.png)
+
+We can see that there are a few POST request and GET requests being made.
+
+![alt text](image-1.png)
+
+3. We send the POST /cart to repeater and lets paly around with the parameters and see if it works or no
+
+4. Lets send the /cart/order-confirmation?order.... to repeater and add the leather jacket to basket to see if the program actually checks the cart.
+We simply need to send this request to the server
+![alt text](image-5.png)
+
+5. We solve the lab!
+![alt text](../images/image-155.png)
+
+## Lab: Authentication bypass via flawed state machine
+
+
+
 ![alt text](../images/image-147.png)
 
