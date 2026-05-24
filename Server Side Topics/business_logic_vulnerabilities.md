@@ -186,6 +186,80 @@ We simply need to send this request to the server
 ## Lab: Authentication bypass via flawed state machine
 
 
+This lab makes flawed assumptions about the sequence of events in the login process. To solve the lab, exploit this flaw to bypass the lab's authentication, access the admin interface, and delete the user carlos.
 
-![alt text](../images/image-147.png)
+You can log in to your own account using the following credentials: wiener:peter
+
+1. We login and try to access the dmin page by entering /admin in the url.
+
+![alt text](../images/image-160.png)
+
+But it didnt work!
+
+2. Lets review the Burp process and see what's going on.
+
+![alt text](../images/image-162.png)
+
+we can see that at POST /role-selector we can select the role. Let's play round with the role parameter.
+
+3. Lets send the request to burp repeater and set the role to admin.
+
+![alt text](../images/image-163.png)
+
+
+didnt work. Lets turn on the intercepter and see if we can do it from there.
+
+4. After selecting the POST request, lets change the role to admin and forward it
+![alt text](../image/image-164.png)
+
+5. After thats done now lets try to access the admin page and see if it works. 
+
+6. It didnt work, so now lets try to drop the packet, access the home page and see if that works.
+   
+![alt text](../image-166.png)
+
+7. We can see that we now have access to admin panel page!
+
+![alt text](../images/image-167.png)
+
+8. Lets delete carlos user and solve the lab!
+![alt text](../images/image-168.png)
+
+## Domain Specific flaws
+
+The discounting functionality of online shops is a classic attack surface when hunting for logic flaws. Example, an online shop that offers 10% discount on orders over $1000. This is vulnerable if the system fails to validate if the order was changed after the discount is applied. In this case, the attacker could simple add items to their cart until they hit the $1000 threshold, then remove the items they dont want before placing the order.
+
+### Lab: Flawed enforcement of business rules
+
+LAB
+Not solved
+This lab has a logic flaw in its purchasing workflow. To solve the lab, exploit this flaw to buy a "Lightweight l33t leather jacket".
+
+You can log in to your own account using the following credentials: wiener:peter
+
+1. Lets check the dicount functionality first.
+![alt text](../images/image-170.png)
+![alt text](../images/image-171.png)
+
+Theres a post request being made to /cart/coupon
+
+2. Lets send this to repeater and send the request again to see if we can further apply the coupon code!
+
+![alt text](../images/image-172.png)
+
+We can see that it rejects the new code. 
+3. Lets alternate between the two coupons and see if it lets us by pass this!
+![alt text](../images/image-173.png)
+
+4. We can see that it does indeed let us add as much coupon as possible. Lets alternate between the coupons and purchase it !
+
+![alt text](../images/image-174.png)
+
+AFter alternating the coupon for a few times we can now get this jacket for 0 dollars!
+
+5. We place order in order to complete the lab!
+![alt text](../images/image-175.png)
+
+
+
 
