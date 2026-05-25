@@ -261,5 +261,67 @@ AFter alternating the coupon for a few times we can now get this jacket for 0 do
 ![alt text](../images/image-175.png)
 
 
+### Lab: Infinite money logic flaw
 
+This lab has a logic flaw in its purchasing workflow. To solve the lab, exploit this flaw to buy a "Lightweight l33t leather jacket".
+
+You can log in to your own account using the following credentials: wiener:peter
+
+1. first lets log in to our account and try purchasing the item in order to investigate the flow of the program
+
+2. There a singup to newsletter, let go a head and sign up and see if we receive any codes or coupons
+![alt text](../images/image-176.png)
+
+There is indeed a coupon. lets apply the coupon and see how much discount we can get!
+![alt text](../images/image-177.png)
+
+We get $401.10 off on discounts
+![alt text](../images/image-178.png)
+
+3. We purchase the gift card for $10 and lets try to aapply the gift card code in there!
+![alt text](../images/image-179.png)
+
+4. We can see the POST request to /gift-card
+![alt text](../images/image-180.png)
+
+1. We now need to go to settings and in the session handling rules panel, we click add. The session handling rule edito dialog opens.
+
+![alt text](../images/image-181.png)
+
+6. We select the following sequence of request in the macro recorder
+
+![alt text](../images/image-182.png)
+
+7. We configure this item, add to create a custom parameter. We name the parameter gift-card and highlight the gift card code at the bottom of the response. ALso add a parameter handling to response 4.
+
+![alt text](../images/image-183.png)
+
+8. We test the macro. We can see in the screenshot below that the macro generated a new giftcard.
+
+![alt text](../images/image-184.png)
+
+9. We send the request GET /my0account to intruder!
+![alt text](../images/image-185.png)
+
+
+
+## Providing an encryption oracle
+
+It is dangerous when user-controllable input is encrypted and the resulting cipgertext is then made available to the user in some way. This kind of input is sometimes known as "encrpytion oracle". An attacker might use this input to encrpyt arbitrary data using the correct algorithm and asymmetric key. 
+
+This becomes dangerous when there are other user-controlled inputs in the application that expect data encrpyted with the same algorithm. In this case, an attacker could potentially use the encryption oracle to generate valid, encrpyted input and then pass it into other sensitive functions.
+
+This issue can be compounded if there is another user-controllable input on the site that provides the reverse funciton. This would enable the attacker to decrypt the data to indentify the expected structure. This saves them some of the work involved in creating their malicious data but is not necessarily required to craft a successful exploit.
+
+## Email address parser discrepancies
+
+Some websites parse email addresses to extract the domain and determine which organization the email owner belongs to. while this process may initially seem straightforward, it is actually very conplex, even for valid RFC-compliant addresses.
+
+Discrepancies in how email addresses are parsed can undermine this logic. These discrepancies arise when different parts of the application handle email addressses differently.
+
+Discrepancies in how email addresses are parsed can undermine this logic. These discrepancies arise when different parts of the application handle email addresses differently.
+
+An attacker might exploit these discrepancies using encoding techniques to disguise parts of the email address. This enables the attacker to create email addresses that pass initial validation checks but are interpreted differently by the server's parsing logic.
+
+The main impact of email address parser discrepancies is unauthorized access. Attackers can register accounts using seemingly valid email addresses from restricted domains. This enables them to gain access to sensitive areas of the application, such as admin panels or restricted user functions.
 
