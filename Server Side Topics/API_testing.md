@@ -99,3 +99,69 @@ Like add a /update position to the path with a list of other common functions su
 
 When looking for hidden endpoints, look for common API naming conventions and industry terms. 
 
+## Finding hidden parameters
+
+When doing API recon, undocumented parameters can be found that the API supports. They can be used to change the application's behavior. Burp includes tools that can help you identify hidden parameter.
+
+i. Burp Intruder enables to automatically discover hidden parameters.
+ii. The "Param miner" BApp enables us to automatically guess up to 65536 param names per request. Param miner automatically guesses names that are relevant to the app, based on the info taken from the scope.
+iii. The content discovery tool enables to discover content that isn't linked from visible content that can be used to browse including parameters.
+
+## Mass assignment vulnerabilities
+
+Mass assignment can create hidden parameters. It occurs when software frameworks automatically bind request parameters to fields on an internal object. Mass assignment may result in the application supporting parameters that aren't intended to be processed by the developer.
+
+### Identifying hidden parameters
+
+Mass assignement creates parameters from object fields. Hidden paramters can often be identified by manually examining objects returned by the API. 
+
+For example, consider a PATCH /api/users/ request, which enables users to update their username and email, and includes the following JSON:
+
+{
+    "username": "wiener",
+    "email": "wiener@example.com",
+}
+A concurrent GET /api/users/123 request returns the following JSON:
+
+{
+    "id": 123,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "isAdmin": "false"
+}
+This may indicate that the hidden id and isAdmin parameters are bound to the internal user object, alongside the updated username and email parameters.
+
+Testing mass assignment vulnerabilities
+
+To test the enumerated isAdmin parameter, we add it to the PATCH request:
+
+{
+    "username": "wiener",
+    "email": "wiener@example.com",
+    "isAdmin": false,
+}
+
+Also, sending a PATCH request with an invalid isAdmin parameter value:
+
+{
+    "username": "wiener",
+    "email": "wiener@example.com",
+    "isAdmin": "foo",
+}
+
+If application behaves differently, it may suggest that the invalid value can impacts the query logic, but the valid value doesn't. This can indicate that the parameter can successfully updated by the user. 
+
+By setting the "isAdmin" : true, we might be able to access the account as an admin.
+If the isAdmin value in the request is bound to the user object without adequate validation and sanitization, the user can be incorrecgtly granted admin privileges.
+
+## Preventing vulnerabilities in APIs
+
+When designing APIs, the following should be kept in consideration:
+i. Securing the documentation if the API shouldnt be publicly accessible. 
+ii. Ensuring documentation is kept up to date so that legitimate tester have full visibility of the API's attack surface.
+iii. Applying an allow list of permitted HTTP methods
+iv. Validate that the content type is expected for each request or response
+v. using generic error messages to avoid giving away info that can be useful to an attacker
+vi. Using protective measures on all version of API
+
+In order to prevent mass assignment, we need to allowlist the properties that can be updated by the user and blocklist sensitive properties that shouldn't be updated by the user.
