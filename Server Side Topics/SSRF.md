@@ -173,3 +173,115 @@ It works.
 Lab solved! :)
 
 ![alt text](../images/image-158.png)
+
+
+### Lab: SSRF with whitelist-based input filter
+
+This lab has a stock check feature which fetches data from an internal system.
+
+To solve the lab, change the stock check URL to access the admin interface at http://localhost/admin and delete the user carlos.
+
+The developer has deployed an anti-SSRF defense you will need to bypass.
+
+1. As usual, we check stock and see that URL is being passed.
+
+![alt text](../images/image-159.png)
+
+2. We check if there is any localhost IPs being hosted there!
+localhost is not there.
+![alt text](../images/image-161.png)
+
+But we can see that there is external stock check host must be sotck.weliketoshop.net.
+
+
+3. we change the URL paramter to the one shown in the screenshot below!
+ 
+![alt text](../images/image-165.png)
+
+We get internal server error.
+
+3. Lets add # and @ in front and see what happens.
+![alt text](../images/image-191.png)
+
+We can see that it does not let us in.
+
+4. lets encode the # to see how the application behaves.
+
+![alt text](../images/image-192.png)
+
+Its giving us a different response.
+
+5. Let add localhost in front to check how it behaves.
+
+![alt text](../images/image-193.png)
+
+We have access to the admin panel.
+
+6. Lets add /admin at the end of the url to access the admin page.
+
+![alt text](../images/image-194.png)
+
+7. Lets add the following to the end of the url and hit send to complete the lab.
+
+![alt text](../images/image-195.png)
+
+Lab solved :)
+
+![alt text](../images/image-196.png)
+
+
+### Lab: SSRF with filter bypass via open redirection vulnerability
+
+This lab has a stock check feature which fetches data from an internal system.
+
+To solve the lab, change the stock check URL to access the admin interface at http://192.168.0.12:8080/admin and delete the user carlos.
+
+The stock checker has been restricted to only access the local application, so you will need to find an open redirect affecting the application first.
+
+1. Lets get the POST request of stock check and next product request to repeater.
+
+2. We try to tamper with the URL but it does not return anything thats useful for us!
+
+![alt text](../images/image-197.png)
+
+3. Its not even using a URL..
+![alt text](../images/image-198.png)
+
+4. In the get request, we can see that there is a request which redirects us to a  certain path.
+
+![alt text](../images/image-199.png)
+
+5. We try to exploit this vulnerability 
+Lets test if it redirects us to google by simply replacing the path with www.google.com
+
+![alt text](../images/image-209.png)
+
+we get a result 302 found!!
+now lets play around with it.
+
+6. Lets copy this path and put it in the check stockApi parameter.
+![alt text](../images/image-210.png)
+
+7. We replace the path with http://192.168.0.12:8080/admin as provided in the question.
+
+![alt text](../images/image-211.png)
+
+We also need to URL encode it in order for it accept it. ctrl + u will URL encode it!!
+
+![alt text](../images/image-212.png)
+
+We got access to the admin site!!
+
+8. In order to delete the user carlos, we need to append /delete?username=carlos at the end as shown in the HTML template.
+
+![alt text](../images/image-213.png)
+
+9. After appending it to the end of the URL, we encode it and hit send to solve the lab!
+
+![alt text](../images/image-214.png)
+
+![alt text](../images/image-215.png)
+
+lab solved! :)
+
+![alt text](../images/image-216.png)
